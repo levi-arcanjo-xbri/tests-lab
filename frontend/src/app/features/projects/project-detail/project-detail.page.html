@@ -1,0 +1,106 @@
+<main class="page">
+  <a routerLink="/" class="back"><app-icon name="arrow-left" /> Projetos</a>
+
+  @if (loading()) {
+    <div aria-busy="true" aria-label="Carregando projeto">
+      <div class="skeleton header-skeleton"></div>
+      <div class="skeleton list-skeleton"></div>
+    </div>
+  } @else if (error()) {
+    <div class="state card">
+      <h2>Não foi possível abrir o projeto</h2>
+      <p role="alert">{{ error() }}</p>
+      <div class="row">
+        <button type="button" class="btn" (click)="load()">Tentar novamente</button>
+        <a routerLink="/" class="btn">Voltar</a>
+      </div>
+    </div>
+  } @else if (project(); as project) {
+    <!-- Cabeçalho do projeto (ou o formulário de edição) -->
+    @if (editing()) {
+      <section class="edit" aria-label="Editar projeto">
+        <app-project-form
+          [initial]="{ name: project.name, description: project.description }"
+          [submitting]="saving()"
+          [errors]="editErrors()"
+          (save)="saveProject($event)"
+          (cancelled)="editing.set(false)"
+        />
+      </section>
+    } @else {
+      <header class="header">
+        <div class="title">
+          <h1>{{ project.name }}</h1>
+          @if (project.description) {
+            <p class="muted">{{ project.description }}</p>
+          }
+        </div>
+        <div class="row">
+          <button type="button" class="btn" (click)="editing.set(true)"><app-icon name="edit" /> Editar</button>
+          <button type="button" class="btn btn-danger" (click)="deleteProject()">
+            <app-icon name="trash" /> Apagar
+          </button>
+        </div>
+      </header>
+    }
+
+    <div class="summary">
+      <div class="progress"><span [style.width.%]="progress()"></span></div>
+      <span class="muted">{{ counts().done }} de {{ counts().all }} concluídas · {{ progress() }}%</span>
+    </div>
+
+    <!-- Nova task -->
+    <form class="card add" [formGroup]="newTaskForm" (ngSubmit)="addTask()">
+      <label for="new-task" class="sr-only">Nova task</label>
+      <input
+        id="new-task"
+        class="input"
+        placeholder="Adicionar uma task…"
+        maxlength="200"
+        autocomplete="off"
+        formControlName="title"
+      />
+      <button type="submit" class="btn btn-primary" [disabled]="adding() || !newTitle.value.trim()">
+        <app-icon name="plus" /> Adicionar
+      </button>
+    </form>
+
+    <!-- Abas de filtro -->
+    <div class="tabs" role="tablist" aria-label="Filtrar tasks">
+      @for (option of filters; track option.value) {
+        <button
+          type="button"
+          role="tab"
+          class="tab"
+          [class.active]="filter() === option.value"
+          [attr.aria-selected]="filter() === option.value"
+          (click)="filter.set(option.value)"
+        >
+          {{ option.label }} <span class="count">{{ counts()[option.value] }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- Lista de tasks -->
+    @if (visibleTasks().length === 0) {
+      <div class="state card">
+        @if (counts().all === 0) {
+          <h2>Nenhuma task ainda</h2>
+          <p>Use o campo acima para adicionar a primeira.</p>
+        } @else if (filter() === 'done') {
+          <h2>Nada concluído ainda</h2>
+          <p>As tasks concluídas aparecem aqui.</p>
+        } @else {
+          <h2>Tudo em dia!</h2>
+          <p>Não há tasks pendentes neste projeto.</p>
+        }
+      </div>
+    } @else {
+      <section class="card list" aria-label="Tasks">
+        @for (task of visibleTasks(); track task.id) {
+          <app-task-item [task]="task" (changed)="onTaskChanged($event)" (removed)="onTaskRemoved($event)" />
+        }
+      </section>
+    }
+  }
+</main>

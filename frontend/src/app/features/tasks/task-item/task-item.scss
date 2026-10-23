@@ -1,0 +1,129 @@
+:host {
+  display: block;
+  border-bottom: 1px solid var(--border);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--surface-muted);
+  }
+
+  &.busy {
+    opacity: 0.6;
+  }
+}
+
+// Círculo que vira um "check" verde quando a task está concluída.
+.check {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: var(--success);
+    color: var(--success);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus);
+  }
+}
+
+.done .check {
+  border-color: var(--success);
+  background: var(--success);
+  color: #fff;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title {
+  overflow-wrap: anywhere;
+}
+
+.done .title {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.edit {
+  padding: 0.3rem 0.5rem;
+}
+
+// Ações aparecem ao passar o mouse (sempre visíveis em telas de toque).
+.actions {
+  display: flex;
+  gap: 0.1rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.task:hover .actions,
+.task:focus-within .actions {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .actions {
+    opacity: 1;
+  }
+}
+
+.history {
+  padding: 0 1rem 0.9rem 3.15rem;
+  font-size: 0.85rem;
+
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0;
+  }
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--text-muted);
+
+  &.done {
+    background: var(--success);
+  }
+}

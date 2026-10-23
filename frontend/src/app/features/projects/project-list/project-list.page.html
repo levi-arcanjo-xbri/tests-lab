@@ -1,0 +1,83 @@
+<main class="page">
+  <header class="header">
+    <div>
+      <h1>Projetos</h1>
+      <p class="muted">Acompanhe o andamento de cada projeto.</p>
+    </div>
+    @if (!showCreate()) {
+      <button type="button" class="btn btn-primary" (click)="showCreate.set(true)">
+        <app-icon name="plus" /> Novo projeto
+      </button>
+    }
+  </header>
+
+  @if (showCreate()) {
+    <section class="create" aria-label="Novo projeto">
+      <app-project-form
+        submitLabel="Criar projeto"
+        [submitting]="creating()"
+        [errors]="createErrors()"
+        (save)="create($event)"
+        (cancelled)="showCreate.set(false)"
+      />
+    </section>
+  }
+
+  <div class="search">
+    <app-icon name="search" />
+    <label for="search" class="sr-only">Buscar projetos</label>
+    <input
+      id="search"
+      class="input"
+      type="search"
+      placeholder="Buscar projetos…"
+      [formControl]="search"
+    />
+  </div>
+
+  @if (loading()) {
+    <div class="grid" aria-busy="true" aria-label="Carregando projetos">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="skeleton card-skeleton"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="state card">
+      <h2>Algo deu errado</h2>
+      <p role="alert">{{ error() }}</p>
+      <button type="button" class="btn" (click)="retry()">Tentar novamente</button>
+    </div>
+  } @else if (projects().length === 0) {
+    <div class="state card">
+      <app-icon name="folder" class="state-icon" />
+      @if (search.value) {
+        <h2>Nenhum projeto encontrado</h2>
+        <p>Nada corresponde a “{{ search.value }}”.</p>
+      } @else {
+        <h2>Nenhum projeto ainda</h2>
+        <p>Crie seu primeiro projeto para começar a organizar suas tasks.</p>
+        <button type="button" class="btn btn-primary" (click)="showCreate.set(true)">
+          <app-icon name="plus" /> Novo projeto
+        </button>
+      }
+    </div>
+  } @else {
+    <ul class="grid" aria-label="Projetos">
+      @for (project of projects(); track project.id) {
+        <li>
+          <a class="card project" [routerLink]="['/projects', project.id]">
+            <h2>{{ project.name }}</h2>
+            <p class="description muted">{{ project.description || 'Sem descrição' }}</p>
+            <div class="progress" aria-hidden="true">
+              <span [style.width.%]="progress(project)"></span>
+            </div>
+            <p class="meta muted">
+              {{ project.done_tasks_count }} de {{ project.tasks_count }} concluídas
+              <span class="percent">{{ progress(project) }}%</span>
+            </p>
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</main>

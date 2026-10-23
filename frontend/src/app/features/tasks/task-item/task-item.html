@@ -1,0 +1,80 @@
+<div class="task" [class.done]="task().status === 'done'" [class.busy]="busy()">
+  <!-- Botão com papel de checkbox: acessível por teclado e leitor de tela. -->
+  <button
+    type="button"
+    class="check"
+    role="checkbox"
+    [attr.aria-checked]="task().status === 'done'"
+    [attr.aria-label]="(task().status === 'done' ? 'Reabrir ' : 'Concluir ') + task().title"
+    [disabled]="busy()"
+    (click)="toggle()"
+  >
+    <app-icon name="check" />
+  </button>
+
+  <div class="body">
+    @if (editing()) {
+      <label class="sr-only" [attr.for]="'task-title-' + task().id">Título da task</label>
+      <input
+        class="input edit"
+        [id]="'task-title-' + task().id"
+        [formControl]="title"
+        maxlength="200"
+        (keydown.enter)="saveEdit()"
+        (keydown.escape)="cancelEdit()"
+        (blur)="saveEdit()"
+      />
+    } @else {
+      <span class="title">{{ task().title }}</span>
+      @if (task().completed_at) {
+        <span class="meta">Concluída em {{ task().completed_at | date: 'short' }}</span>
+      }
+    }
+  </div>
+
+  <div class="actions">
+    <button
+      type="button"
+      class="btn btn-icon"
+      title="Histórico"
+      aria-label="Histórico"
+      [attr.aria-expanded]="showHistory()"
+      (click)="toggleHistory()"
+    >
+      <app-icon name="history" />
+    </button>
+    <button type="button" class="btn btn-icon" title="Editar" aria-label="Editar" (click)="startEdit()">
+      <app-icon name="edit" />
+    </button>
+    <button type="button" class="btn btn-icon danger" title="Apagar" aria-label="Apagar" (click)="remove()">
+      <app-icon name="trash" />
+    </button>
+  </div>
+</div>
+
+@if (showHistory()) {
+  <div class="history">
+    @if (historyError()) {
+      <p class="alert">
+        Não foi possível carregar o histórico.
+        <button type="button" class="btn btn-icon" (click)="loadHistory()">Tentar novamente</button>
+      </p>
+    } @else if (history() === null) {
+      <p class="muted">Carregando histórico…</p>
+    } @else {
+      <ol>
+        @for (entry of history(); track entry.id) {
+          <li>
+            <span class="dot" [class.done]="entry.to_status === 'done'"></span>
+            @if (entry.from_status === null) {
+              Criada como <strong>{{ statusLabel(entry.to_status) }}</strong>
+            } @else {
+              {{ statusLabel(entry.from_status) }} → <strong>{{ statusLabel(entry.to_status) }}</strong>
+            }
+            <span class="muted">· {{ entry.user?.name ?? 'Usuário removido' }} · {{ entry.created_at | date: 'short' }}</span>
+          </li>
+        }
+      </ol>
+    }
+  </div>
+}

@@ -1,0 +1,17 @@
+<header class="topbar">
+  <div class="inner">
+    <a routerLink="/" class="brand"><span class="logo">✓</span> Tasks</a>
+
+    <div class="user">
+      @if (user(); as user) {
+        <span class="avatar" aria-hidden="true">{{ user.name.charAt(0).toUpperCase() }}</span>
+        <span class="name">{{ user.name }}</span>
+      }
+      <button type="button" class="btn btn-icon" (click)="logout()" aria-label="Sair" title="Sair">
+        <app-icon name="logout" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<router-outlet />

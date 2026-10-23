@@ -1,0 +1,63 @@
+<main class="auth">
+  <div class="card">
+    <span class="brand"><span class="logo">✓</span> Tasks</span>
+    <h1>Criar conta</h1>
+    <p class="muted">Leva menos de um minuto.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="name">Nome</label>
+        <input id="name" class="input" formControlName="name" autocomplete="name" />
+        @if (fieldErrors()['name']; as message) {
+          <span class="hint">{{ message }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input id="email" class="input" type="email" formControlName="email" autocomplete="email" />
+        @if (fieldErrors()['email']; as message) {
+          <span class="hint">{{ message }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Senha</label>
+        <input
+          id="password"
+          class="input"
+          type="password"
+          formControlName="password"
+          autocomplete="new-password"
+        />
+        @if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+          <span class="hint">A senha precisa ter pelo menos 8 caracteres.</span>
+        }
+        @if (fieldErrors()['password']; as message) {
+          <span class="hint">{{ message }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password_confirmation">Confirmar senha</label>
+        <input
+          id="password_confirmation"
+          class="input"
+          type="password"
+          formControlName="password_confirmation"
+          autocomplete="new-password"
+        />
+      </div>
+
+      @if (error() && !fieldErrors()['name'] && !fieldErrors()['email'] && !fieldErrors()['password']) {
+        <p class="alert" role="alert">{{ error() }}</p>
+      }
+
+      <button type="submit" class="btn btn-primary" [disabled]="loading()">
+        {{ loading() ? 'Criando conta…' : 'Criar conta' }}
+      </button>
+    </form>
+
+    <p class="footer muted">Já tem conta? <a routerLink="/login">Entrar</a></p>
+  </div>
+</main>

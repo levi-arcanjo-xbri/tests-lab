@@ -1,0 +1,36 @@
+<form class="card project-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <div class="field">
+    <label for="project-name">Nome</label>
+    <input
+      id="project-name"
+      class="input"
+      formControlName="name"
+      placeholder="Ex.: Lançamento do site"
+      maxlength="120"
+    />
+    @if (form.controls.name.touched && form.controls.name.hasError('required')) {
+      <span class="hint">Informe o nome do projeto.</span>
+    }
+    @if (errors()['name']; as message) {
+      <span class="hint">{{ message }}</span>
+    }
+  </div>
+
+  <div class="field">
+    <label for="project-description">Descrição <span class="muted">(opcional)</span></label>
+    <textarea
+      id="project-description"
+      class="input"
+      formControlName="description"
+      rows="2"
+      placeholder="Para que serve este projeto?"
+    ></textarea>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn" (click)="cancelled.emit()">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+      {{ submitting() ? 'Salvando…' : submitLabel() }}
+    </button>
+  </div>
+</form>
