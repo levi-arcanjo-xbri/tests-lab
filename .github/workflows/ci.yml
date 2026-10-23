@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend (Pint + Pest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alinhar UID/GID com o runner
+        run: printf 'UID=%s\nGID=%s\n' "$(id -u)" "$(id -g)" > .env
+      - run: scripts/check.sh backend
+
+  frontend:
+    name: Frontend (ESLint + testes unitários)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alinhar UID/GID com o runner
+        run: printf 'UID=%s\nGID=%s\n' "$(id -u)" "$(id -g)" > .env
+      - run: scripts/check.sh frontend
+
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alinhar UID/GID com o runner
+        run: printf 'UID=%s\nGID=%s\n' "$(id -u)" "$(id -g)" > .env
+      - run: scripts/check.sh e2e
+        env:
+          CI: "true"
+      - name: Logs dos containers em caso de falha
+        if: failure()
+        run: docker compose logs
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          retention-days: 7
