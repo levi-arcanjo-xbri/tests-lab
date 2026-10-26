@@ -33,3 +33,27 @@
 - **Arquivos alterados:** `HISTORICO.md` (os demais só foram versionados).
 - **Resultado:** concluído. Árvore de trabalho limpa. Sem testes novos; a última execução completa do `scripts/check.sh` estava verde.
 - **Pendências:** criar o repositório remoto no GitHub, configurar a proteção da `main`, fazer o push e abrir o PR.
+
+## 2026-10-23 — Aula de Laravel a partir do projeto
+
+- **Pedido:** ensinar Laravel usando a estrutura deste projeto.
+- **O que foi feito:** li as rotas, o `bootstrap/app.php` e os arquivos do contexto Task (controller, FormRequest, Action, máquina de estados, model, exceção), da criação de projeto (controller, request, action, resource, policy), a migration de tasks, a factory, o middleware de idempotência e os testes de transição. Montei uma aula no chat que segue o caminho de uma requisição (`PATCH /api/projects/{project}/tasks/{task}/status`) camada por camada, com exercícios práticos no fim.
+- **Arquivos alterados:** `HISTORICO.md`.
+- **Resultado:** concluído. Nenhum código alterado; sem lint ou testes a rodar.
+- **Pendências:** nenhuma. Os exercícios ficam para o usuário.
+
+## 2026-10-23 — Explicação do operador `::` no PHP
+
+- **Pedido:** explicar o que significa `::` no PHP, a partir de `protected $model = Task::class;` na `TaskFactory`.
+- **O que foi feito:** expliquei no chat o operador de resolução de escopo (`::`): `Classe::class`, métodos estáticos (`Task::factory()`), constantes e cases de enum (`TaskStatus::Todo`), propriedades estáticas e `self::`, `static::` e `parent::`, com exemplos do próprio projeto e a diferença para `->`.
+- **Arquivos alterados:** `HISTORICO.md`.
+- **Resultado:** concluído. Nenhum código alterado; sem lint ou testes a rodar.
+- **Pendências:** nenhuma.
+
+## 2026-10-23 — Origem da função `fake()`
+
+- **Pedido:** explicar de onde vem `fake()` na `TaskFactory`, já que não há `use` para ela.
+- **O que foi feito:** localizei a definição em `vendor/laravel/framework/src/Illuminate/Foundation/helpers.php` e expliquei no chat: é uma função global carregada pelo autoload `files` do Composer, e o PHP procura funções não qualificadas primeiro no namespace atual e depois no global, por isso não precisa de `use`. Mostrei também o que ela devolve (um `Faker\Generator` singleton por locale).
+- **Arquivos alterados:** `HISTORICO.md`.
+- **Resultado:** concluído. Nenhum código alterado; sem lint ou testes a rodar.
+- **Pendências:** nenhuma.
