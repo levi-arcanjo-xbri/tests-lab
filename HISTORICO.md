@@ -57,3 +57,11 @@
 - **Arquivos alterados:** `HISTORICO.md`.
 - **Resultado:** concluído. Nenhum código alterado; sem lint ou testes a rodar.
 - **Pendências:** nenhuma.
+
+## 2026-10-26 — CI em todo pull request, de qualquer branch
+
+- **Pedido:** fazer a pipeline rodar em todo merge request (pull request), sem importar a branch.
+- **O que foi feito:** acrescentei `branches: ['**']` ao gatilho `pull_request` em `.github/workflows/ci.yml`, deixando explícito que qualquer branch de destino dispara a pipeline. O gatilho `pull_request` sem filtro já fazia isso; a mudança torna a intenção visível. O `push` continua restrito à `main`.
+- **Arquivos alterados:** `.github/workflows/ci.yml`, `HISTORICO.md`.
+- **Resultado:** concluído. Só YAML alterado; sem lint ou testes a rodar.
+- **Pendências:** nenhuma.
